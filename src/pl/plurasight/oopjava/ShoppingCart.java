@@ -1,27 +1,34 @@
 package pl.plurasight.oopjava;
 
+import javax.sound.sampled.Line;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class ShoppingCart {
-    private List<Product> products = new ArrayList<>();
+    private List<LineItem> lineItems = new ArrayList<>();
 
-    public void addProduct(Product product){
-        products.add(product);
+    public void addLineItem(LineItem lineItem){
+        lineItems.add(lineItem);
+    }
+    public void addLineItem(Product prod, int quantity){
+        this.addLineItem(new LineItem(prod, quantity));
+    }
+
+    public List<LineItem> getLineItems(){
+        return lineItems.stream()
+                .map(LineItem::new)
+                .collect(Collectors.toList());
     }
 
     public int getTotalCost(){
-        int totalPrice = 0;
-        for(Product product: products){
-            totalPrice += product.getPrice();
-        }
-        return products.stream().mapToInt(Product::getPrice).sum();
+        return lineItems.stream().mapToInt(LineItem::getPrice).sum();
     }
 
     @Override
     public String toString() {
         return "ShoppingCart{" +
-                "products=" + products +
+                "products=" + lineItems +
                 '}';
     }
 }
