@@ -1,45 +1,35 @@
 package pl.plurasight.oopjava;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
+
+import static pl.plurasight.oopjava.BusinessCustomer.BusinessSize.LARGE;
 
 public class Main {
 
     public static void main(String[] args) {
-        //Fundamentals of Object Oriented Programming in Java
+       Customer janeDoe = new Customer("Jakub Duda", 5420238236234823L);
+       Customer acme = new BusinessCustomer("Acme Products", 5420238236234823L, LARGE);
+       Customer globex = new BusinessCustomer("Dudex", 2423874236742734L, LARGE);
+       Customer saveTheWorld = new NonprofitCustomer("Save Ukraine", 19863182731897263L);
+       BusinessCustomer acme2 = new BusinessCustomer("Acme Products", 5420238236234823L, LARGE);
 
-        ShoppingCart karta1 = new ShoppingCart();
-        Product jablko = Catalogue.getProduct("Jabłko");
-        Product gruszka = Catalogue.getProduct("Gruszka");
+       List<Customer> customers = List.of(janeDoe, acme, globex, saveTheWorld);
 
-        ShoppingCart cart = new ShoppingCart();
-        cart.addLineItem(new LineItem(jablko, 1));
-        cart.addLineItem(new LineItem(gruszka,2));
+       Map<Integer, Long> discountMap = customers.stream().collect(Collectors.groupingBy(Customer::calculateDiscount, Collectors.counting()));
 
-        System.out.println(cart.getTotalCost());
+       System.out.println(discountMap);
+//       Druga opcja zliczenia klientów grupując po promocji
+//       HashMap<Integer, Long> discountsMap = new HashMap<>();
+//       for(Customer c : customers){
+//           discountsMap.merge(c.calculateDiscount(), 1L, Long::sum);
+//       }
 
-        Customer jDuda = new Customer("Jakub Duda", 43243242432234234L);
-        Optional<Order> order = jDuda.checkout(cart);
-        System.out.println(order);
+        acme2.testMethod();
 
-        order.ifPresent(Main::fulfil);
-        System.out.println(order);
     }
 
-    public static void fulfil(Order o){
-        ShoppingCart cart = o.getCard();
-        boolean shippingUnfinished;
-        do{
-            shippingUnfinished = false;
-            for(LineItem li : cart.getLineItems()){
-                boolean fulfilHalf = Math.random() > 0.7;
-                if(fulfilHalf){
-                    li.setQuantity(li.getQuantity()/2);
-                    shippingUnfinished = true;
-                }else{
-                    li.setQuantity(0);
-                }
-                System.out.println(fulfilHalf);
-            }
-        }while(shippingUnfinished);
-    }
 }

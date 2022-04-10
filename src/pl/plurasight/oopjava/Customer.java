@@ -11,11 +11,18 @@ public class Customer {
         this.creditCard = new CreditCard(cardNumber);
     }
 
+    public CreditCard getCreditCard(){
+        return creditCard;
+    }
+
+    public int calculateDiscount(){
+        return 0;
+    }
+
     public Optional<Order> checkout(ShoppingCart cart){
         Optional<Payment> payment = creditCard.mkPayment(cart.getTotalCost());
         return payment.isPresent() ? Optional.of(new Order(this, cart, payment.get()))
                 : Optional.empty();
-
     }
 
     @Override
